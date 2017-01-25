@@ -1,33 +1,138 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
+
+<link rel="import" href="../oc-connection-api/oc-connection-api.html">
+<link rel="import" href="../oc-grid-controls/oc-grid-controls.html">
+<link rel="import" href="../iron-data-table/iron-data-table.html">
+<link rel="import" href="../oc-iron-data-table-styles/oc-iron-data-table-styles.html">
+<link rel="import" href="../oc-paginator/mercury-paginator.html">
+<link rel="import" href="../oc-core-utils/oc-api-consumer-behaviour.html">
+<link rel="import" href="../oc-core-utils/oc-api-consumer-behaviour.html">
+
 <!--
 `oc-connection-manage`
 Element to manage connections on the Ordercloud platform
 
-@demo demo/index.html 
+@demo demo/index.html
 -->
+
+<!--todo: API call connection data-->
+<!--todo: API call list of new connection types-->
+<!--todo: table data bindings-->
 
 <dom-module id="oc-connection-manage">
   <template>
     <style>
       :host {
         display: block;
+        padding:10px;
+      }
+
+      paper-material {
+        background: #fff;
+        padding: 10px;
+      }
+
+      iron-data-table {
+        font-size: 14px;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+
+    <oc-connection-api id="connectionApi"></oc-connection-api>
+
+    <paper-dropdown-menu label="Create Another Connection">
+      <paper-listbox class="dropdown-content">
+        <paper-item>Croissant</paper-item>
+        <paper-item>Donut</paper-item>
+        <paper-item>Financier</paper-item>
+        <paper-item>Madeleine</paper-item>
+      </paper-listbox>
+    </paper-dropdown-menu>
+
+    <oc-grid-controls data="[[ _connections ]]" total-count="[[ _totalItems ]]" num-entries="[[ _pageSize ]]">
+      <iron-data-table
+              id="dataTable"
+              current-page="[[ _currentPage ]]"
+              loading="{{ loading }}">
+        <data-table-column name="Organisation" sort-by="org">
+          <template></template>
+        </data-table-column>
+        <data-table-column name="Connection Types" sort-by="connectionType">
+          <template></template>
+        </data-table-column>
+        <data-table-column name="Fee" sort-by="fee">
+          <template></template>
+        </data-table-column>
+        <data-table-column name="Organisation Type" sort-by="orgType">
+          <template></template>
+        </data-table-column>
+        <data-table-column name="Settlement Interval" sort-by="settlementInterval">
+          <template></template>
+        </data-table-column>
+        <data-table-column name="Actions">
+          <template>
+            <div data-option-object$="[[ item ]]" class="actions" >
+              <paper-icon-button id="edit" title="Edit Connection" icon="create"  on-tap="_editConnection" raised ></paper-icon-button>
+              <paper-icon-button id="settings" title="Connection Settings" icon="settings"  on-tap="_editSettings" raised ></paper-icon-button>
+              <paper-icon-button id="delete" title="Delete Connection" icon="delete"  on-tap="_deleteConnection" raised ></paper-icon-button>
+            </div>
+          </template>
+        </data-table-column>
+      </iron-data-table>
+    </oc-grid-controls>
+
   </template>
 
   <script>
     Polymer({
 
       is: 'oc-connection-manage',
+      behaviors: [OC.Behaviours.ApiConsumer],
 
       properties: {
-        prop1: {
-          type: String,
-          value: 'oc-connection-manage',
+        organisationId: Number,
+        loading: {
+          type: Boolean,
+          notify: true
         },
+
+        _connections : Array,
+        _totalItems: Number,
+        _pageSize: Number,
+        _currentPage: Number
+
       },
+
+      observers : [
+        'refresh(organisationId)'
+      ],
+
+      refresh : function(){
+
+        if(!this.organisationId) return;
+
+        this.loading = true;
+
+
+
+      },
+
+      _editConnection : function(){
+
+      },
+
+      _editSettings : function(){
+
+      },
+
+      _deleteConnection : function(){
+
+      }
 
     });
   </script>
